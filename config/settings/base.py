@@ -1,19 +1,21 @@
+import environ
 from pathlib import Path
-import os
-from datetime import timedelta
-from decouple import config
 
+# --- Paths ---
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "CHANGE_ME")
+# --- Environment ---
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(BASE_DIR / ".env")
 
-# ❗ Quitar DEBUG = False de aquí
-# ❗ Quitar ALLOWED_HOSTS de aquí
+# --- Core Settings ---
+SECRET_KEY = env("SECRET_KEY")
+DEBUG = env.bool("DEBUG", default=True)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
 
-# ----------------------
-# APPS
-# ----------------------
+# --- Installed Apps ---
 INSTALLED_APPS = [
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -21,16 +23,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # THIRD PARTY
+    # Third-party apps
     "rest_framework",
-    "rest_framework_simplejwt",
     "drf_yasg",
-    "django_filters",
+
+    # Local apps
+    "apps.core",
 ]
 
-# ----------------------
-# MIDDLEWARE
-# ----------------------
+# --- Middleware ---
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -38,15 +39,18 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# --- URLConf ---
 ROOT_URLCONF = "config.urls"
 
+# --- Templates (CORREGIDO) ---
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
+        "DIRS": [BASE_DIR / "templates"],   # carpeta global "templates/"
+        "APP_DIRS": True,                   # activa templates dentro de apps
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -58,45 +62,39 @@ TEMPLATES = [
     },
 ]
 
+# --- WSGI ---
 WSGI_APPLICATION = "config.wsgi.application"
 
+# --- Database ---
 DATABASES = {
-    "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),
-        "NAME": config("DB_NAME", default="agricola_db"),
-        "USER": config("DB_USER", default="root"),
-        "PASSWORD": config("DB_PASSWORD", default=""),
-        "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default="3306"),
-        "OPTIONS": {
-            "init_command": config(
-                "DB_OPTIONS_INIT_COMMAND",
-                default="SET sql_mode='STRICT_TRANS_TABLES'"
-            ),
-            "charset": config("DB_OPTIONS_CHARSET", default="utf8mb4"),
-        },
-    }
+    "default": env.db(default="sqlite:///db.sqlite3")
 }
 
+# --- Static files ---
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ----------------------
-# REST + JWT
-# ----------------------
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# --- Django REST Framework ---
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
     ],
 }
 
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+# --- Swagger / OpenAPI ---
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
 }
