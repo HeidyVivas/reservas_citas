@@ -1,21 +1,22 @@
-import environ
+# config/settings/base.py
+import os
 from pathlib import Path
+import environ
 
-# --- Paths ---
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# --- Environment ---
+# env
 env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(BASE_DIR / ".env")
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # lee .env en la raíz
 
-# --- Core Settings ---
-SECRET_KEY = env("SECRET_KEY")
-DEBUG = env.bool("DEBUG", default=True)
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
+SECRET_KEY = env('SECRET_KEY', default='unsafe-secret-for-dev')
+DEBUG = env('DEBUG')
 
-# --- Installed Apps ---
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+
+# Apps
 INSTALLED_APPS = [
-    # Django apps
+    # django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -23,16 +24,19 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party apps
+    # third-party
     "rest_framework",
     "drf_yasg",
+    "corsheaders",
 
-    # Local apps
+    # local apps
     "apps.core",
+    "apps.citas",
 ]
 
-# --- Middleware ---
+# Middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",  # debe ir arriba
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -42,10 +46,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# --- URLConf ---
 ROOT_URLCONF = "config.urls"
 
-# --- Templates (CORREGIDO) ---
+
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

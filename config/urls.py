@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -17,14 +17,33 @@ schema_view = get_schema_view(
 
 urlpatterns = [
 
+    # Panel administrador
     path("admin/", admin.site.urls),
 
-    # health check
-    path("", include("apps.core.urls")),
+    # Health check
+    path("api/", include("apps.core.urls")),
 
-    # swagger
-    path("docs/", schema_view.with_ui('swagger', cache_timeout=0)),
+    # Endpoints de la API
+    path("api/", include("apps.citas.urls")),
 
-    # openapi json
-    path("openapi.json/", schema_view.without_ui()),
+    # Swagger UI
+    path(
+        "docs/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="swagger-ui"
+    ),
+
+    # Redoc (opcional)
+    path(
+        "redoc/",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc"
+    ),
+
+    # OpenAPI JSON
+    re_path(
+        r"^openapi\.json$",
+        schema_view.without_ui(cache_timeout=0),
+        name="openapi-json"
+    ),
 ]
