@@ -10,6 +10,15 @@ from datetime import datetime
 from .models import Cita, Servicio
 from .serializers import CitaSerializer, ServicioSerializer
 from .permissions import IsEmployeeOrOwner
+from django.db import IntegrityError
+from django.utils import timezone
+from datetime import datetime, time, timedelta
+
+
+from .models import Cita, Servicio
+from .serializers import CitaSerializer
+from apps.users.permissions import IsOwnerOrEmployee
+from rest_framework.permissions import IsAuthenticated
 
 
 class ServicioViewSet(viewsets.ModelViewSet):
@@ -46,12 +55,27 @@ class CitaViewSet(viewsets.ModelViewSet):
     ordering = ['-created_at']
 
     def get_queryset(self):
+
         """Filtrar citas según el rol del usuario"""
         user = self.request.user
         if user.is_staff:  # Empleados ven todas las citas
             return Cita.objects.all().select_related('cliente', 'servicio')
         # Clientes solo ven sus propias citas
         return Cita.objects.filter(cliente=user).select_related('cliente', 'servicio')
+        """Retorna las citas del usuario autenticado, empleados y admin ven todo."""
+        user = self.request.user
+
+        # admin ve todo
+        if user.is_staff:
+            return Cita.objects.all()
+
+        # empleado ve todo
+        if hasattr(user, "profile") and user.profile.rol == "empleado":
+            return Cita.objects.all()
+
+        # cliente ve solo sus citas
+        return Cita.objects.filter(cliente=user)
+
 
     def perform_create(self, serializer):
         """
@@ -59,6 +83,7 @@ class CitaViewSet(viewsets.ModelViewSet):
         - Asignar cliente automáticamente
         - Verificar disponibilidad de horario
         """
+
         with transaction.atomic():
             # El cliente es siempre el usuario autenticado
             serializer.save(cliente=self.request.user)
@@ -138,6 +163,32 @@ class CitaViewSet(viewsets.ModelViewSet):
         
         # Verificar que solo empleados completen
         if not request.user.is_staff:
+
+        try:
+            serializer.save(cliente=self.request.user)
+        except IntegrityError:
+            raise serializers.ValidationError({
+                "detail": "Ese horario ya está reservado para este servicio. Por favor elige otro."
+            })
+
+    def create(self, request, *args, **kwargs):
+        """Override para agregar validaciones adicionales antes de guardar"""
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
+        servicio_id = request.data.get('servicio')
+        fecha = request.data.get('fecha')
+        hora = request.data.get('hora')
+
+        # Validar servicio
+        try:
+            servicio = Servicio.objects.get(id=servicio_id)
+        except Servicio.DoesNotExist:
+
             return Response(
                 {"detail": "Solo empleados pueden completar citas."},
                 status=status.HTTP_403_FORBIDDEN
@@ -168,6 +219,7 @@ class CitaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
+
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def mis_citas(self, request):
         """
@@ -194,6 +246,9 @@ class CitaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+
+        # Validar hora
+
         try:
             qs = self.get_queryset().filter(
                 fecha__gte=fecha_inicio,
@@ -206,4 +261,20 @@ class CitaViewSet(viewsets.ModelViewSet):
                 {"detail": f"Error en el filtrado: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+class CitaDetailAPIView(generics.RetrieveAPIView):
+    """
+    GET /api/citas/<id>/ - Ver detalle de cita (cliente dueño, empleado o admin)
+    """
+    queryset = Cita.objects.all()
+    serializer_class = CitaSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrEmployee]
 
