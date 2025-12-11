@@ -3,9 +3,10 @@ from .models import Cita, Servicio
 
 @admin.register(Servicio)
 class ServicioAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'duracion_min']
+    list_display = ['nombre', 'duracion', 'precio']
     search_fields = ['nombre']
-    list_filter = ['duracion_min']
+    list_filter = ['duracion']
+
 
 @admin.register(Cita)
 class CitaAdmin(admin.ModelAdmin):
@@ -14,14 +15,5 @@ class CitaAdmin(admin.ModelAdmin):
     search_fields = ['cliente__username', 'cliente__email', 'servicio__nombre']
     readonly_fields = ['created_at']
     ordering = ['-fecha', '-hora']
-    
-    fieldsets = (
-        ('Información de la Cita', {
-            'fields': ('cliente', 'servicio', 'fecha', 'hora')
-        }),
-        ('Metadata', {
-            'fields': ('created_at',),
-            'classes': ('collapse',)
-        }),
-    )
+
 
