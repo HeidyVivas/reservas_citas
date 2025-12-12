@@ -8,23 +8,20 @@ entre los entornos de desarrollo y producción.
 import os
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 # ============================================================================
 # INICIALIZACIÓN DE ENVIRON
 # ============================================================================
-# Inicializar django-environ para leer variables de entorno
 env = environ.Env()
 
-# Construir rutas dentro del proyecto usando pathlib
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Leer archivo .env si existe
 environ.Env.read_env(BASE_DIR / '.env')
 
 # ============================================================================
 # CONFIGURACIÓN DE SEGURIDAD
 # ============================================================================
-# SECRET_KEY debe estar en variables de entorno en producción
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-this-in-production-12345')
 
 # ============================================================================
@@ -57,8 +54,8 @@ INSTALLED_APPS = [
 # ============================================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise para archivos estáticos
-    'corsheaders.middleware.CorsMiddleware',  # CORS debe ir antes de CommonMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,29 +103,21 @@ DATABASES = {
 # VALIDACIÓN DE CONTRASEÑAS
 # ============================================================================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # ============================================================================
 # MODELO DE USUARIO PERSONALIZADO
 # ============================================================================
-AUTH_USER_MODEL = 'users.users'
+AUTH_USER_MODEL = 'users.User'   # ← CORREGIDO AQUÍ
 
 # ============================================================================
 # INTERNACIONALIZACIÓN
 # ============================================================================
-LANGUAGE_CODE = 'es-co'  # Español de Colombia
+LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
@@ -140,11 +129,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
-# WhiteNoise - Configuración para servir archivos estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ============================================================================
-# ARCHIVOS MEDIA (uploads de usuarios)
+# ARCHIVOS MEDIA
 # ============================================================================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -174,10 +162,8 @@ REST_FRAMEWORK = {
 }
 
 # ============================================================================
-# SIMPLE JWT (Autenticación con tokens)
+# SIMPLE JWT
 # ============================================================================
-from datetime import timedelta
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -189,22 +175,18 @@ SIMPLE_JWT = {
 }
 
 # ============================================================================
-# SWAGGER/OpenAPI
+# SWAGGER / OpenAPI
 # ============================================================================
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-        }
+        'Bearer': {'type': 'apiKey', 'name': 'Authorization', 'in': 'header'}
     },
     'USE_SESSION_AUTH': False,
     'JSON_EDITOR': True,
 }
 
 # ============================================================================
-# CORS (Cross-Origin Resource Sharing)
+# CORS
 # ============================================================================
 CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=False)
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
