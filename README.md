@@ -1,4 +1,4 @@
-# 📅 API de Reservas de Citas – Backend Profesional (Django REST Framework)
+#  API de Reservas de Citas – Backend Profesional (Django REST Framework)
 
 **INSTITUCIÓN:** SENA - Centro de Biotecnología  
 **PROGRAMA:** Análisis y Desarrollo de Software (ADSO)  
@@ -8,7 +8,7 @@
 
 ---
 
-## 🎯 Descripción del Proyecto
+##  Descripción del Proyecto
 
 API REST profesional y escalable para gestionar reservas de citas mediante Django REST Framework. Incluye:
 
@@ -27,7 +27,7 @@ API REST profesional y escalable para gestionar reservas de citas mediante Djang
 
 ---
 
-## 🚀 Inicio Rápido
+##  Inicio Rápido
 
 ### 1. Requisitos Previos
 - Python 3.10+
@@ -90,7 +90,7 @@ Accede a: **http://127.0.0.1:8000/docs/**
 
 ---
 
-## 📊 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 reservas_citas/
@@ -126,7 +126,7 @@ reservas_citas/
 
 ---
 
-## 🔐 Autenticación JWT
+##  Autenticación JWT
 
 ### Obtener Token
 ```bash
@@ -212,7 +212,7 @@ GET    /api/auth/profile/           # Mi perfil
 
 ---
 
-## 🔍 Filtrado Avanzado
+##  Filtrado Avanzado
 
 ### Filtros Disponibles
 ```bash
@@ -240,7 +240,7 @@ GET /api/citas/?fecha_desde=2024-01-01&estado=aprobada&search=juan&ordering=-hor
 
 ---
 
-## 🧪 Pruebas
+##  Pruebas
 
 ### Ejecutar Pruebas
 ```bash
@@ -263,7 +263,7 @@ coverage report
 
 ---
 
-## 🔒 Seguridad
+##  Seguridad
 
 ### Variables Críticas
 - `SECRET_KEY` - Cambia en producción
@@ -281,7 +281,7 @@ SECURE_HSTS_SECONDS = 31536000      # 1 año
 
 ---
 
-## 📦 Deployment
+##  Deployment
 
 ### Preparar para Producción
 ```bash
@@ -314,7 +314,7 @@ gunicorn config.wsgi
 
 ---
 
-## 🔧 Configuración Avanzada
+##  Configuración Avanzada
 
 ### Cambiar de SQLite a PostgreSQL
 ```ini
@@ -343,7 +343,7 @@ EMAIL_HOST_PASSWORD = 'your-app-password'
 
 ---
 
-## 📈 Métricas del Proyecto
+##  Métricas del Proyecto
 
 | Métrica | Descripción | Estado |
 |---------|-------------|--------|
@@ -360,7 +360,7 @@ EMAIL_HOST_PASSWORD = 'your-app-password'
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Error: "No module named 'cors_headers'"
 ```bash
@@ -390,7 +390,7 @@ pip install drf-yasg
 
 ---
 
-## 📞 Contacto y Soporte
+##  Contacto y Soporte
 
 - **GitHub:** [HeidyVivas/reservas_citas](https://github.com/HeidyVivas/reservas_citas)
 - **Email Equipo:** [contacto@ejemplo.com]
