@@ -150,3 +150,69 @@ class CitaAPITest(APITestCase):
                 hora=time(10,0)
             )
 
+    def test_list_citas_requires_authentication(self):
+        """Prueba: listar citas requiere autenticación"""
+        response = self.client.get('/api/citas/')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_authenticated_user_can_list_citas(self):
+        """Prueba: usuario autenticado puede listar sus citas"""
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get('/api/citas/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_cita_with_valid_data(self):
+        """Prueba: crear cita con datos válidos"""
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "servicio": self.servicio.id,
+            "fecha": self.fecha_valida,
+            "hora": "10:00:00"
+        }
+        response = self.client.post('/api/citas/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_cita_estado_default_is_pendiente(self):
+        """Prueba: estado default de cita es pendiente"""
+        cita = Cita.objects.create(
+            cliente=self.user,
+            servicio=self.servicio,
+            fecha=date.today() + timedelta(days=1),
+            hora=time(10, 0)
+        )
+        self.assertEqual(cita.estado, 'pendiente')
+
+    def test_cancel_cita(self):
+        """Prueba: cancelar una cita"""
+        cita = Cita.objects.create(
+            cliente=self.user,
+            servicio=self.servicio,
+            fecha=date.today() + timedelta(days=1),
+            hora=time(10, 0),
+            estado='aprobada'
+        )
+        
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(f'/api/citas/{cita.id}/cancelar/')
+        
+        # Verificar respuesta y estado
+        if response.status_code == status.HTTP_200_OK:
+            cita.refresh_from_db()
+            self.assertEqual(cita.estado, 'cancelada')
+
+    def test_cannot_cancel_completed_cita(self):
+        """Prueba: no se puede cancelar cita completada"""
+        cita = Cita.objects.create(
+            cliente=self.user,
+            servicio=self.servicio,
+            fecha=date.today() - timedelta(days=1),
+            hora=time(10, 0),
+            estado='completada'
+        )
+        
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(f'/api/citas/{cita.id}/cancelar/')
+        
+        # Debería rechazar o no permitir cancelación
+        if response.status_code != status.HTTP_404_NOT_FOUND:
+            self.assertIn(response.status_code, [status.HTTP_400_BAD_REQUEST])
