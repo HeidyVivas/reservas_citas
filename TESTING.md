@@ -1,6 +1,6 @@
-# 🧪 Guía de Testing - Reservas Citas API
+#  Guía de Testing - Reservas Citas API
 
-## 📋 Estructura de Tests
+##  Estructura de Tests
 
 ```
 apps/
@@ -12,7 +12,7 @@ apps/
 │   └── tests.py          # Tests de modelos y API de citas
 ```
 
-## 🚀 Instalación de Dependencias
+##  Instalación de Dependencias
 
 Las dependencias de testing ya están en `requirements.txt`:
 
@@ -26,7 +26,7 @@ O instalar solo testing:
 pip install pytest pytest-django pytest-cov factory-boy
 ```
 
-## ▶️ Ejecutar Tests
+##  Ejecutar Tests
 
 ### **Todos los tests**
 ```bash
@@ -64,7 +64,7 @@ pytest -m "unit"                      # Solo tests unitarios
 pytest -m "integration"               # Solo tests de integración
 ```
 
-## 📊 Tests Disponibles
+##  Tests Disponibles
 
 ### **Apps/Core/Tests.py** (Health Check)
 - ✅ `test_health_check_endpoint_exists` - GET /api/health/ devuelve 200
@@ -100,7 +100,7 @@ pytest -m "integration"               # Solo tests de integración
 - ✅ `test_cancel_cita` - Cancelar cita funciona
 - ✅ `test_cannot_cancel_completed_cita` - No puede cancelar completada
 
-## 🎯 Meta de Cobertura
+##  Meta de Cobertura
 
 - **Target**: 50% de cobertura
 - **Archivo**: `pytest.ini` configura `--cov-fail-under=50`
@@ -114,7 +114,7 @@ start htmlcov/index.html       # Windows
 xdg-open htmlcov/index.html    # Linux
 ```
 
-## 🔧 Configuración en pytest.ini
+##  Configuración en pytest.ini
 
 ```ini
 [pytest]
@@ -131,7 +131,7 @@ Esto asegura que:
 - ✅ Busca clases que empiecen con `Test`
 - ✅ Busca funciones que empiecen con `test_`
 
-## 💡 Consejos
+##  Consejos
 
 1. **Correr tests antes de hacer push**:
    ```bash
@@ -158,7 +158,7 @@ Esto asegura que:
    pytest --lf
    ```
 
-## 📚 Recursos
+##  Recursos
 
 - [Pytest Documentation](https://docs.pytest.org/)
 - [Pytest Django](https://pytest-django.readthedocs.io/)
