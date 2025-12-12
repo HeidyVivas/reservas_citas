@@ -9,7 +9,11 @@ DEBUG = False
 # Si DATABASE_URL no está configurada, usamos SQLite como fallback
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
-        "default": dj_database_url.parse(env('DATABASE_URL'))
+        "default": dj_database_url.config(
+            default=env("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
 else:
     # Fallback a SQLite si DATABASE_URL no está definida
