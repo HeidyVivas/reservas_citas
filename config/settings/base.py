@@ -17,26 +17,22 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
 # Apps
 INSTALLED_APPS = [
-    # django
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django_filters",
-
-    # third-party
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "drf_yasg",
-    "corsheaders",
-
-    # local apps
-    "apps.core",
-    "apps.citas",
-    "apps.users",
+    ...
 ]
+
+ROOT_URLCONF = "config.urls"
+
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
+INSTALLED_APPS = [
+    ...
+]
+
+ROOT_URLCONF = "config.urls"
+
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
+
 
 # Middleware
 MIDDLEWARE = [
@@ -51,6 +47,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
+
 
 
 TEMPLATES = [
