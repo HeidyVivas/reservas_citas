@@ -163,7 +163,9 @@ SWAGGER_SETTINGS = {
             "in": "header",
         }
     },
+    "USE_STATIC_URL": False, 
 }
+
 
 # --- Logging ---
 LOGGING = {
