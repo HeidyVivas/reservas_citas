@@ -9,7 +9,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="API Reservas Citas",
         default_version='v1',
-        description="Documentación oficial de la API",
+        description="Documentación oficial de la cita",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -36,5 +36,10 @@ urlpatterns = [
 
     # OpenAPI JSON
     re_path(r"^openapi\.json$", schema_view.without_ui(cache_timeout=0), name="openapi-json"),
+
+    path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    # tus otras rutas...
 ]
+
 
