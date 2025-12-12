@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 import environ
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -74,8 +75,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Database ---
 DATABASES = {
-    "default": env.db(default="sqlite:///db.sqlite3")
+    "default": {
+        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": config("DB_NAME", default="reservas_citas_db_signmoveat"),
+        "USER": config("DB_USER", default="reservas_citas_db_signmoveat"),
+        "PASSWORD": config("DB_PASSWORD", default="f2516ec4d8e58e15da385aae9c46b8658"),
+        "HOST": config("DB_HOST", default="w7pot4.h.filess.io"),
+        "PORT": config("DB_PORT", default="61002"),
+    }
 }
+
 
 # --- Static files ---
 STATIC_URL = "/static/"
