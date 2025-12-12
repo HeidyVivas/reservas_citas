@@ -74,11 +74,14 @@ TEMPLATES = [
 # En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "citas_crytownbee",
+        "USER": "citas_crytownbee",
+        "PASSWORD": "6fc7fde39065b5305fb948befbe766f3c4760d37",
+        "HOST": "1aesln.h.filess.io",
+        "PORT": "5432",
     }
 }
-
 # --- Password validation ---
 AUTH_PASSWORD_VALIDATORS = [
     {
