@@ -73,14 +73,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Database ---
+# En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
-        "NAME": config("DB_NAME", default="reservas_citas_db_signmoveat"),
-        "USER": config("DB_USER", default="reservas_citas_db_signmoveat"),
-        "PASSWORD": config("DB_PASSWORD", default="f2516ec4d8e58e15da385aae9c46b8658"),
-        "HOST": config("DB_HOST", default="w7pot4.h.filess.io"),
-        "PORT": config("DB_PORT", default="61002"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
