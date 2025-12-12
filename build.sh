@@ -1,15 +1,12 @@
-#!/bin/bash
-# build.sh - Script de build para Render
-
+#!/usr/bin/env bash
+# exit on error
 set -o errexit
 
-echo "==> Instalando dependencias..."
+# Instalar dependencias
 pip install -r requirements.txt
 
-echo "==> Ejecutando migraciones..."
-python manage.py migrate --noinput
+# Recolectar archivos estáticos
+python manage.py collectstatic --no-input
 
-echo "==> Recolectando archivos estáticos..."
-python manage.py collectstatic --noinput
-
-echo "==> Build completado exitosamente!"
+# Ejecutar migraciones
+python manage.py migrate
