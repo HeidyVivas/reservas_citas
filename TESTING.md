@@ -1,6 +1,6 @@
-# 🧪 Guía de Testing - Reservas Citas API
+#  Guía de Testing - Reservas Citas API
 
-## 📋 Estructura de Tests
+##  Estructura de Tests
 
 ```
 apps/
@@ -12,7 +12,7 @@ apps/
 │   └── tests.py          # Tests de modelos y API de citas
 ```
 
-## 🚀 Instalación de Dependencias
+##  Instalación de Dependencias
 
 Las dependencias de testing ya están en `requirements.txt`:
 
@@ -26,7 +26,7 @@ O instalar solo testing:
 pip install pytest pytest-django pytest-cov factory-boy
 ```
 
-## ▶️ Ejecutar Tests
+##  Ejecutar Tests
 
 ### **Todos los tests**
 ```bash
@@ -64,7 +64,7 @@ pytest -m "unit"                      # Solo tests unitarios
 pytest -m "integration"               # Solo tests de integración
 ```
 
-## 📊 Tests Disponibles
+##  Tests Disponibles
 
 ### **Apps/Core/Tests.py** (Health Check)
 - ✅ `test_health_check_endpoint_exists` - GET /api/health/ devuelve 200
