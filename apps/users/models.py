@@ -1,32 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
-# Modelo de perfil extendido para el usuario
 class Profile(models.Model):
-    # Opciones de rol que puede tener un usuario
     ROLE_CHOICES = (
-        ('cliente', 'Cliente'),   # Usuario normal / cliente
-        ('empleado', 'Empleado'), # Usuario que atiende citas
-        ('admin', 'Admin'),       # Administrador del sistema
+        ('cliente', 'Cliente'),
+        ('empleado', 'Empleado'),
+        ('admin', 'Admin'),
     )
 
-    # Relación uno a uno con el modelo User de Django
-    # Si se elimina el User, se elimina también el Profile
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='profile'  # Permite acceder al profile desde user.profile
+        related_name='profile'
     )
 
-    # Campos adicionales del perfil
-    nombre = models.CharField(max_length=150, blank=True)  # Nombre completo opcional
-    telefono = models.CharField(max_length=30, blank=True)  # Teléfono opcional
+    nombre = models.CharField(max_length=150, blank=True)
+    telefono = models.CharField(max_length=30, blank=True)
     rol = models.CharField(
         max_length=20,
-        choices=ROLE_CHOICES,   # Selección de rol
-        default='cliente'       # Valor por defecto
+        choices=ROLE_CHOICES,
+        default='cliente'
     )
 
     def __str__(self):
-        # Representación en texto del perfil: username y rol
         return f"{self.user.username} - {self.rol}"
