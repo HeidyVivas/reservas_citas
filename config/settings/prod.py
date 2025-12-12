@@ -1,4 +1,3 @@
-
 """
 Configuración de Django para el entorno de PRODUCCIÓN.
 
