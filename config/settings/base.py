@@ -50,7 +50,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "reservas_citas.urls"
+ROOT_URLCONF = "config.urls"
+
 
 TEMPLATES = [
     {
