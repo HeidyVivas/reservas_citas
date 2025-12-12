@@ -6,9 +6,19 @@ import dj_database_url # pyright: ignore[reportMissingImports]
 DEBUG = False
 
 # PostgreSQL via env DATABASE_URL
-DATABASES = {
-    "default": dj_database_url.parse(env('DATABASE_URL'))
-}
+# Si DATABASE_URL no está configurada, usamos SQLite como fallback
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        "default": dj_database_url.parse(env('DATABASE_URL'))
+    }
+else:
+    # Fallback a SQLite si DATABASE_URL no está definida
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Seguridad HTTPS (solo en producción real)
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
