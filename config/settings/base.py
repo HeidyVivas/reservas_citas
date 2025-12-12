@@ -76,11 +76,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),
+        "NAME": config("DB_NAME", default="reserva_citas_dramwstory"),
+        "USER": config("DB_USER", default="reserva_citas_dramwstory"),
+        "PASSWORD": config("DB_PASSWORD", default="cba297269a8a534658a53a4a871fbb3e"),
+        "HOST": config("DB_HOST", default="k432os.h.filess.io"),
+        "PORT": config("DB_PORT", default="3307"),
     }
 }
-
 
 # --- Static files ---
 STATIC_URL = "/static/"
