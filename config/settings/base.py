@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ============================================================================
 # MODELO DE USUARIO PERSONALIZADO
 # ============================================================================
-AUTH_USER_MODEL = 'apps.User'   # ← CORREGIDO AQUÍ
+AUTH_USER_MODEL = 'apps.users'   
 
 # ============================================================================
 # INTERNACIONALIZACIÓN
