@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import environ
 from decouple import config
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -15,26 +16,28 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
-# Apps
+# Django Apps
 INSTALLED_APPS = [
-    ...
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    
+    # Third-party apps
+    "rest_framework",
+    "drf_yasg",
+    "corsheaders",
+    "django_filters",
+    
+    # Local apps
+    "apps.core.apps.CoreConfig",
+    "apps.citas.apps.CitasConfig",
+    "apps.users.apps.UsersConfig",
+    "apps.health.apps.HealthConfig",
 ]
 
-ROOT_URLCONF = "config.urls"
-
-WSGI_APPLICATION = "config.wsgi.application"
-ASGI_APPLICATION = "config.asgi.application"
-INSTALLED_APPS = [
-    ...
-]
-
-ROOT_URLCONF = "config.urls"
-
-WSGI_APPLICATION = "config.wsgi.application"
-ASGI_APPLICATION = "config.asgi.application"
-
-
-# Middleware
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # debe ir arriba
     "django.middleware.security.SecurityMiddleware",
@@ -48,7 +51,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
-
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 TEMPLATES = [
     {
@@ -66,9 +70,6 @@ TEMPLATES = [
     },
 ]
 
-# --- WSGI ---
-WSGI_APPLICATION = "config.wsgi.application"
-
 # --- Database ---
 # En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
@@ -78,6 +79,27 @@ DATABASES = {
     }
 }
 
+# --- Password validation ---
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+# --- Internationalization ---
+LANGUAGE_CODE = "es-es"
+TIME_ZONE = "America/Caracas"
+USE_I18N = True
+USE_TZ = True
 
 # --- Static files ---
 STATIC_URL = "/static/"
@@ -85,6 +107,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# --- Default primary key field type ---
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --- Django REST Framework ---
 REST_FRAMEWORK = {
@@ -112,14 +137,21 @@ REST_FRAMEWORK = {
 }
 
 # --- JWT Configuration ---
-from datetime import timedelta
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+# --- CORS Configuration ---
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ALLOWED_ORIGINS",
+    default=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+)
 
 # --- Swagger / OpenAPI ---
 SWAGGER_SETTINGS = {
@@ -130,5 +162,27 @@ SWAGGER_SETTINGS = {
             "name": "Authorization",
             "in": "header",
         }
+    },
+}
+
+# --- Logging ---
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }

@@ -18,13 +18,14 @@ class ServicioModelTest(TestCase):
         """Crear datos de prueba"""
         self.servicio = Servicio.objects.create(
             nombre="Consulta General",
-            duracion_min=30
+            duracion=30,
+            precio=50.00
         )
 
     def test_crear_servicio(self):
         """Prueba: crear un servicio"""
         self.assertEqual(self.servicio.nombre, "Consulta General")
-        self.assertEqual(self.servicio.duracion_min, 30)
+        self.assertEqual(self.servicio.duracion, 30)
 
     def test_string_representation(self):
         """Prueba: representación en texto del servicio"""
@@ -43,7 +44,8 @@ class CitaModelTest(TestCase):
         )
         self.servicio = Servicio.objects.create(
             nombre="Consulta General",
-            duracion_min=30
+            duracion=30,
+            precio=50.00
         )
         self.cita = Cita.objects.create(
             cliente=self.user,
@@ -87,7 +89,8 @@ class CitaSerializerTest(TestCase):
         )
         self.servicio = Servicio.objects.create(
             nombre="Consulta General",
-            duracion_min=30
+            duracion=30,
+            precio=50.00
         )
 
     def test_serializer_valido(self):
@@ -127,7 +130,8 @@ class CitaAPITest(APITestCase):
         
         self.servicio = Servicio.objects.create(
             nombre="Consulta General",
-            duracion_min=30
+            duracion=30,
+            precio=50.00
         )
         
         self.fecha_valida = (date.today() + timedelta(days=1)).isoformat()

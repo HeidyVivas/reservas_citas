@@ -22,6 +22,7 @@ class Servicio(models.Model):
         ordering = ['nombre']
         verbose_name = 'Servicio'
         verbose_name_plural = 'Servicios'
+        app_label = 'citas'
 
     def __str__(self): # sirve para que el objeto tenga un nombre legible.
         return f"{self.nombre} ({self.duracion}min - ${self.precio})"
@@ -88,6 +89,7 @@ class Cita(models.Model):
             models.Index(fields=['estado', '-fecha']),  # Índice para facilitar las búsquedas por estado y fecha
             models.Index(fields=['cliente', '-fecha']),  # Índice para facilitar las búsquedas por cliente y fecha
         ]
+        app_label = 'citas'
 
     def __str__(self): # sirve para que el objeto tenga un nombre legible.
         return f"Cita {self.id} - {self.cliente.get_full_name()} - {self.servicio.nombre} ({self.fecha} {self.hora})"

@@ -1,25 +1,33 @@
 # config/settings/prod.py
 from .base import *
-import dj_database_url # pyright: ignore[reportMissingImports]
+import dj_database_url
+import os
 
 # OBLIGATORIO: DEBUG debe ser False en producción
 DEBUG = False
 
 # PostgreSQL via env DATABASE_URL
 # Si DATABASE_URL no está configurada, usamos SQLite como fallback
-if 'DATABASE_URL' in os.environ:
+if "DATABASE_URL" in os.environ:
     DATABASES = {
-        "default": dj_database_url.parse(env('DATABASE_URL'))
+        "default": dj_database_url.config(
+            default=os.environ["DATABASE_URL"],
+            ssl_require=False,
+            ssl_disable_cert_verification=True,  # Para conexiones autofirmadas
+            conn_max_age=600,  # Pool de conexiones
+        )
+    }
+    # Asegurar que se ejecuten migraciones automáticamente
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
     }
 else:
-    # Fallback a SQLite si DATABASE_URL no está definida
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 # Seguridad HTTPS (solo en producción real)
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
