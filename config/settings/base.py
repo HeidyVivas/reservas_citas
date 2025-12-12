@@ -76,12 +76,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 # En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "reserva_citas_dramwstory",
-        "USER": "reserva_citas_dramwstory",
-        "PASSWORD": "cba297269a8a534658a53a4a871fbb3e",
-        "HOST": "k432os.h.filess.io",
-        "PORT": "3307",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
