@@ -75,15 +75,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # --- Database ---
 DATABASES = {
     "default": {
-        "ENGINE": config("DB_ENGINE", default="django.db.backends.postgresql"),
-        "NAME": config("DB_NAME", default="reservas_citas_db_signmoveat"),
-        "USER": config("DB_USER", default="reservas_citas_db_signmoveat"),
-        "PASSWORD": config("DB_PASSWORD", default="f2516ec4d8e58e15da385aae9c46b8658"),
-        "HOST": config("DB_HOST", default="w7pot4.h.filess.io"),
-        "PORT": config("DB_PORT", default="61002"),
+        "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),
+        "NAME": config("DB_NAME", default="reserva_citas_dramwstory"),
+        "USER": config("DB_USER", default="reserva_citas_dramwstory"),
+        "PASSWORD": config("DB_PASSWORD", default="cba297269a8a534658a53a4a871fbb3e"),
+        "HOST": config("DB_HOST", default="k432os.h.filess.io"),
+        "PORT": config("DB_PORT", default="3307"),
     }
 }
-
 
 # --- Static files ---
 STATIC_URL = "/static/"
