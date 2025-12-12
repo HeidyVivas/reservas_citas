@@ -73,6 +73,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Database ---
+# En desarrollo usa SQLite, en producción se sobrescribe en prod.py
 DATABASES = {
     "default": {
         "ENGINE": config("DB_ENGINE", default="django.db.backends.mysql"),

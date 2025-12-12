@@ -1,2 +1,2 @@
-import pymysql
-pymysql.install_as_MySQLdb()
+# No se necesita pymysql para PostgreSQL
+# El proyecto usa PostgreSQL en producción

@@ -1,6 +1,6 @@
 # config/settings/prod.py
 from .base import *
-import dj_database_url
+import dj_database_url # pyright: ignore[reportMissingImports]
 
 # OBLIGATORIO: DEBUG debe ser False en producción
 DEBUG = False
