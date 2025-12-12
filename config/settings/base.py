@@ -1,47 +1,64 @@
+"""
+Configuración base de Django para el proyecto reservas_citas.
+
+Este archivo contiene todas las configuraciones comunes que se comparten
+entre los entornos de desarrollo y producción.
+"""
+
 import os
 from pathlib import Path
 import environ
 
+# ============================================================================
+# INICIALIZACIÓN DE ENVIRON
+# ============================================================================
+# Inicializar django-environ para leer variables de entorno
 env = environ.Env()
-environ.Env.read_env()
 
-# =========================
-# BASE
-# =========================
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Construir rutas dentro del proyecto usando pathlib
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "cambia_esto_por_un_valor_seguro")
-DEBUG = False
-ALLOWED_HOSTS = ["reservas-citas-bp3b.onrender.com", "127.0.0.1", "localhost"]
+# Leer archivo .env si existe
+environ.Env.read_env(BASE_DIR / '.env')
 
-# =========================
+# ============================================================================
+# CONFIGURACIÓN DE SEGURIDAD
+# ============================================================================
+# SECRET_KEY debe estar en variables de entorno en producción
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-this-in-production-12345')
+
+# ============================================================================
 # APLICACIONES INSTALADAS
-# =========================
+# ============================================================================
 INSTALLED_APPS = [
-    # Django
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # DRF y Swagger
+    
+    # Third party apps
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
-
-    # Mis apps
-    'apps.core',
+    'corsheaders',
+    'django_filters',
+    
+    # Apps locales
     'apps.users',
     'apps.citas',
+    'apps.core',
 ]
 
-# =========================
+# ============================================================================
 # MIDDLEWARE
-# =========================
+# ============================================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Sirve estáticos en producción
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise para archivos estáticos
+    'corsheaders.middleware.CorsMiddleware',  # CORS debe ir antes de CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -50,14 +67,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# =========================
-# URLS
-# =========================
-ROOT_URLCONF = 'reservas_citas.urls'
+# ============================================================================
+# CONFIGURACIÓN DE URLs Y WSGI
+# ============================================================================
+ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
 
-# =========================
+# ============================================================================
 # TEMPLATES
-# =========================
+# ============================================================================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,67 +92,124 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'reservas_citas.wsgi.application'
-
-# =========================
-# BASE DE DATOS (PostgreSQL ejemplo Render)
-# =========================
+# ============================================================================
+# BASE DE DATOS (se sobrescribe en prod.py y dev.py)
+# ============================================================================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', 5432),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-# =========================
-# CONTRASEÑAS
-# =========================
+# ============================================================================
+# VALIDACIÓN DE CONTRASEÑAS
+# ============================================================================
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
-# =========================
+# ============================================================================
+# MODELO DE USUARIO PERSONALIZADO
+# ============================================================================
+AUTH_USER_MODEL = 'users.Usuario'
+
+# ============================================================================
 # INTERNACIONALIZACIÓN
-# =========================
-LANGUAGE_CODE = 'es-co'
+# ============================================================================
+LANGUAGE_CODE = 'es-co'  # Español de Colombia
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
 
-# =========================
-# ESTÁTICOS
-# =========================
+# ============================================================================
+# ARCHIVOS ESTÁTICOS
+# ============================================================================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+
+# WhiteNoise - Configuración para servir archivos estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# =========================
-# MEDIA (si usas)
-# =========================
+# ============================================================================
+# ARCHIVOS MEDIA (uploads de usuarios)
+# ============================================================================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# =========================
+# ============================================================================
 # REST FRAMEWORK
-# =========================
+# ============================================================================
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
 
-# =========================
-# DRF-YASG (Swagger)
-# =========================
+# ============================================================================
+# SIMPLE JWT (Autenticación con tokens)
+# ============================================================================
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# ============================================================================
+# SWAGGER/OpenAPI
+# ============================================================================
 SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
     'USE_SESSION_AUTH': False,
     'JSON_EDITOR': True,
-    'DEFAULT_INFO': 'reservas_citas.urls.schema_view',
 }
+
+# ============================================================================
+# CORS (Cross-Origin Resource Sharing)
+# ============================================================================
+CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=False)
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+
+# ============================================================================
+# DEFAULT PRIMARY KEY FIELD TYPE
+# ============================================================================
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
