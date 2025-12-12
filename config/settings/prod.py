@@ -2,21 +2,65 @@
 from .base import *
 import dj_database_url
 
-DEBUG = env.bool("DEBUG", default=False)
+# OBLIGATORIO: DEBUG debe ser False en producción
+DEBUG = False
 
-# PostgreSQL via env DATABASE_URL o variables individuales
+# PostgreSQL via env DATABASE_URL
 DATABASES = {
-    "default": dj_database_url.parse(env('DATABASE_URL', default='postgres://user:pass@localhost:5432/dbname'))
+    "default": dj_database_url.parse(env('DATABASE_URL'))
 }
 
-# Seguridad HTTPS
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 60
+# Seguridad HTTPS (solo en producción real)
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
+CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_SECURITY_POLICY = {
+    "default-src": ("'self'",),
+}
+
+# HSTS (HTTP Strict Transport Security)
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000)  # 1 año
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-# Hosts
+# Hosts permitidos (DEBE estar configurado)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+if not ALLOWED_HOSTS:
+    raise ValueError("ALLOWED_HOSTS debe estar configurado en producción")
+
+# CORS - Restricto en producción
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+
+# Logging en producción
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
+# Configuración de archivos estáticos para producción
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+WHITENOISE_MANIFEST_STRICT = False
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
