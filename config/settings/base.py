@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ============================================================================
 # MODELO DE USUARIO PERSONALIZADO
 # ============================================================================
-AUTH_USER_MODEL = 'users.Profile'
+AUTH_USER_MODEL = 'users.users'
 
 # ============================================================================
 # INTERNACIONALIZACIÓN
