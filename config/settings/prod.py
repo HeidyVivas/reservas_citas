@@ -1,9 +1,11 @@
 # config/settings/prod.py
 from .base import *
 import dj_database_url # pyright: ignore[reportMissingImports]
-
+import environ
 # OBLIGATORIO: DEBUG debe ser False en producción
 DEBUG = False
+env = environ.Env()
+environ.Env.read_env()
 
 # PostgreSQL via env DATABASE_URL
 # Si DATABASE_URL no está configurada, usamos SQLite como fallback
