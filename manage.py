@@ -3,11 +3,10 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
     # Verificar si estamos en producción (Render detecta esto con DATABASE_URL)
-    if os.getenv('DATABASE_URL'):
+    if os.getenv('DATABASE_URL'): 
         # Estamos en producción
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.prod')
     else:
