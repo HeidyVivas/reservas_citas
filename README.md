@@ -162,7 +162,7 @@ Content-Type: application/json
 
 ---
 
-## 🛣️ Endpoints Principales
+##  Endpoints Principales
 
 ### Health Check
 ```
