@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class IsEmployeeOrOwner(BasePermission):
     """
-    Permite que:
+    los permisos personalizados
     - Los empleados (is_staff) accedan a cualquier cita
     - Los clientes solo accedan a sus propias citas
     """

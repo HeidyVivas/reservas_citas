@@ -3,10 +3,16 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
+    # Verificar si estamos en producción (Render detecta esto con DATABASE_URL)
+    if os.getenv('DATABASE_URL'): 
+        # Estamos en producción
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.prod')
+    else:
+        # Estamos en desarrollo
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

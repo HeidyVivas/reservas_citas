@@ -1,10 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
-from app.models import Estudiante # pyright: ignore[reportMissingImports]
+from app.models import Estudiante  # Importa el modelo Estudiante
 
 class EstudianteDeleteTest(TestCase):
+    """Pruebas para la eliminación de Estudiantes"""
 
     def setUp(self):
+        """Crear un estudiante de prueba antes de cada test"""
         self.estudiante = Estudiante.objects.create(
             nombre="Juan",
             apellido="Bocanegra",
@@ -12,6 +14,9 @@ class EstudianteDeleteTest(TestCase):
         )
 
     def test_cancel_delete(self):
-        # Simular que el usuario hace click en cancelar y vuelve
+        """Simular que el usuario cancela la eliminación"""
+        # Hacer GET a la URL de cancelar eliminar
         response = self.client.get(reverse('cancelar_eliminar'))
-        self.assertEqual(response.status_code, 302)  # redirección
+        
+        # Verificar que se redirige correctamente (código 302)
+        self.assertEqual(response.status_code, 302)

@@ -38,6 +38,8 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # HSTS (Render tolera esto)
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Permitir que el dominio sea incluido en la lista de precarga HSTS
 SECURE_HSTS_PRELOAD = True
 
 # --------------------
