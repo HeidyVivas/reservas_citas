@@ -35,11 +35,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	
     
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
-	'django.contrib.staticfiles',
+	
     'drf_yasg',
     'corsheaders',
     'django_filters',
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.citas',
     'apps.core',
+	
+
 ]
 
 # ============================================================================
