@@ -18,7 +18,7 @@ DATABASES = {
     )
 }
 
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ====================
 # ALLOWED HOSTS

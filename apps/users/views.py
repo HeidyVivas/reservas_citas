@@ -1,7 +1,6 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-
+ 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
