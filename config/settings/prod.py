@@ -18,10 +18,7 @@ DATABASES = {
     )
 }
 
-# 🔥 CLAVE ABSOLUTA: forzar schema public
-DATABASES["default"]["OPTIONS"] = {
-    "options": "-c search_path=public"
-}
+
 
 # ====================
 # ALLOWED HOSTS
