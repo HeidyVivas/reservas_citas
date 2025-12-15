@@ -7,4 +7,4 @@ class UsersConfig(AppConfig):
 
     # Nombre de la aplicación dentro del proyecto Django
     name = "apps.users"
-    label = 'users'     
+       

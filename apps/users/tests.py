@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 from apps.users.models import Profile
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # =========================
 # Tests para creación y validación de usuarios

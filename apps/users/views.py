@@ -7,6 +7,9 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .serializers import UserSerializer, RegisterSerializer, ProfileSerializer
 from .models import Profile
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # =========================
 # Registrar nuevo usuario

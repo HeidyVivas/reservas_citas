@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django_filters',
     
     # Apps locales
-    'apps.users.apps.UsersConfig',
+    'apps.users',
     'apps.citas',
     'apps.core',
 ]
@@ -115,6 +115,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # MODELO DE USUARIO PERSONALIZADO
 # ============================================================================
 AUTH_USER_MODEL = 'users.User'
+
+
 
 # ============================================================================
 # INTERNACIONALIZACIÓN
